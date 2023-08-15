@@ -1,20 +1,11 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layout.admin')
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    <title>Crud Laravel</title>
-  </head>
-  <body>
+@section('content')
+<body>
   <h1 class="text-center mb-4">Tambah Data Mahasiswa</h1>
 
   <div class="container">
-  
+    <div class="col-8">
     <div class="row">
        <div class="card">
         <div class="card-body">
@@ -23,6 +14,9 @@
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
             <input type="text" name="nama" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            @error('nama')
+              <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Jurusan</label>
@@ -30,15 +24,17 @@
                 <option selected>Pilih Jurusan</option>
                 <option value="Teknik Elektro">Teknik Elektro</option>
                 <option value="Teknik Mesin">Teknik Mesin</option>
-                <option value="Teknik Mesin">Teknik Mesin</option>
-                <option value="Teknik Mesin">Teknik Sipil</option>
-                <option value="Teknik Mesin">Teknik Akuntansi</option>
-                <option value="Teknik Mesin">Teknik AB</option>
+                <option value="Teknik Sipil">Teknik Sipil</option>
+                <option value="Teknik Akuntansi">Teknik Akuntansi</option>
+                <option value="Teknik AB">Teknik AB</option>
             </select>>
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Nim</label>
             <input type="number" name="nim" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            @error('nim')
+            <div class="alert alert-danger">{{ $message }}</div>
+          @enderror
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Masukkan Foto</label>
@@ -63,4 +59,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     -->
   </body>
-</html>
+
+@endsection

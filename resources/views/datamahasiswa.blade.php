@@ -1,18 +1,28 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <title>Crud Laravel</title>
-  </head>
-  <body>
-  <h1 class="text-center mb-4">Data Mahasiswa</h1>
+@extends('layout.admin')
+@push('css')
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+@endpush
+@section('content')
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Data Mahasiswa</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Data Mahasiswa</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
 
   <div class="container">
   <a href="/tambahmahasiswa" class="btn btn-success">Tambah +</a>
@@ -24,7 +34,7 @@
         </div>
 
         <div class="col-auto">
-        <a href="/exportpdf" class="btn btn-info">Export PDF</a>
+        <a href="/exportpdf" class="btn btn-danger">Export PDF</a>
         </div>
 
         <div class="col-auto">
@@ -36,6 +46,10 @@
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Import Data
         </button>
+        </div>
+
+        <div class="col-auto">
+            <a href="/logout" class="btn btn-dark">Logout</a>
         </div>
 
     <!-- Modal -->
@@ -82,31 +96,52 @@
             </tr>
         </thead>
         <tbody>
-        @php
-            $no = 1;
-        @endphp
-        @foreach ($data as $index => $row)
-        <tr>
-            <th scope="row">{{ $index + $data->firstItem() }}</th>
-            <td>{{ $row->nama }}</td>
-            <td>
-                <img src="{{ asset('fotomahasiswa/' .$row->foto) }}" alt="" style="width: 48px;">
-            </td>
-            <td>{{ $row->jurusan }}</td>
-            <td>{{ $row->nim }}</td>
-            <td>{{ $row->created_at->format('D M Y') }}</td>
-            <td>
-                <a href="/tampilkandata/{{ $row->id }}" class="btn btn-info">Edit</a>
-                <a href="#" class="btn btn-primary delete" data-id="{{ $row->id }}" data-nama="{{ $row->nama }}">Delete</a>
-            </td>
-        </tr>
-        @endforeach
-            
-        </tbody>
+                    <?php for ($i = 0; $i < count($data); $i++) { ?>
+                        <tr>
+                            <th scope="row"><?php echo $i + 1; ?></th>
+                            <td>
+                                <img src="<?php echo asset('fotomahasiswa/' . $data[$i]->foto); ?>" alt="" style="width: 40px;">
+                            </td>
+                            <td><?php echo $data[$i]->nama; ?></td>
+                            <td><?php echo $data[$i]->nim; ?></td>
+                            <td><?php echo $data[$i]->jurusan; ?></td>
+                            <td><?php echo date('D M Y', strtotime($data[$i]->created_at)); ?></td>
+                            <td>
+                                <a href="/tampilkandata/<?php echo $data[$i]->id; ?>" class="btn btn-info">Edit</a>
+                                <a href="#" class="btn btn-danger delete" data-id="<?php echo $data[$i]->id; ?>" data-nama="<?php echo $data[$i]->nama; ?>">Delete</a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    @push('js')
+                    <script>
+                        $(document).ready(function() {
+                            $('#mahasiswaTable').DataTable({
+                                serverSide: true,
+                                processing: true,
+                                ajax: {
+                                    url: "{{ route('mahasiswa') }}",
+                                    type: 'GET',
+                                },
+                                columns: [
+                                    { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+                                    { data: 'foto', name: 'foto' },
+                                    { data: 'nama', name: 'nama' },
+                                    { data: 'nim', name: 'nim' },
+                                    { data: 'jurusan', name: 'jurusan' },
+                                    { data: 'created_at', name: 'created_at' },
+                                    { data: 'action', name: 'action', orderable: false, searchable: false },
+                                ]
+                            });
+                        });
+                    </script>
+                    @endpush
+
+
+                    </tbody>
         </table>
-        {{ $data->links() }}
         </div>
     </div>
+</div>
 
     <!-- Optional JavaScript; choose one of the two! -->
 
@@ -121,6 +156,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     -->
   </body>
+
   <script>
     $('.delete').click(function(){
         var mahasiswaid = $(this).attr('data-id');
@@ -142,14 +178,14 @@
         } else {
             swal("Data tidak jadi di hapus !");
         }
-
-        });
+      });
     });
-</script>
-    @if(Session::has('success'))
-    <script>
-        toastr.success("{{ Session::get('success') }}");
-    </script>
-    @endif
 
+  </script>
+
+  <script>
+      @if(Session::has('success'))
+      toastr.success("{{ Session::get('success') }}");
+      @endif
+  </script>
 </html>
